@@ -4,7 +4,7 @@ A library for marshaling data with a functional design. This is useful for trans
 
 ## Usage
 
-```
+```php
 <?php
 
 use Krak\Marshal as m;

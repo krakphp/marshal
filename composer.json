@@ -1,0 +1,38 @@
+{
+    "name": "krak/marshal",
+    "description": "Data marshal and transformation library",
+    "type": "library",
+    "homepage": "http://gitlab.bighead.net/krak/marshal",
+    "keywords": [
+        "marshal",
+        "marshaler",
+        "transformer"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "RJ Garcia",
+            "email": "rj@bighead.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Krak\\Marshal\\": "src"
+        },
+        "files": [
+            "src/accessors.php",
+            "src/marshalers.php",
+            "src/util.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Krak\\Tests\\": "tests"
+        }
+    },
+    "require-dev": {
+        "phake/phake": "^2.0",
+        "phpunit/phpunit": "~4.0",
+        "symfony/var-dumper": "^2.0"
+    }
+}

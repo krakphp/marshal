@@ -4,6 +4,9 @@ namespace Krak\Marshal;
 
 use RuntimeException;
 
+/**
+ * InvalidMarshalerException
+ */
 class InvalidMarshalerException extends RuntimeException
 {
     public function __construct() {

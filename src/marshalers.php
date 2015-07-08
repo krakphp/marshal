@@ -123,7 +123,7 @@ function map($marshaler)
  */
 function collection($acc, $marshalers)
 {
-    return function($data) use ($acc, $marshalers, $skip_null) {
+    return function($data) use ($acc, $marshalers) {
         list($get, $has) = $acc;
         $marshaled = [];
         foreach ($marshalers as $key => $marshaler) {

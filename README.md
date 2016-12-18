@@ -1,6 +1,6 @@
 # Krak Marshal
 
-A library for marshaling data with a functional design. This is useful for transforming/marshaling data for API output or for any other types types of transforming.
+A library for marshaling data with a functional design. This is useful for transforming/marshaling data for API output, hydrating serialized data, or for any other types types of transforming.
 
 ## Usage
 

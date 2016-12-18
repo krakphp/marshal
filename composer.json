@@ -20,6 +20,7 @@
             "Krak\\Marshal\\": "src"
         },
         "files": [
+            "src/hydrators.php",
             "src/accessors.php",
             "src/marshalers.php",
             "src/util.php"
@@ -30,7 +31,12 @@
             "Krak\\Tests\\": "tests"
         }
     },
+    "require": {
+        "danielstjules/stringy": "^2.3",
+        "php": "^5.6 || ^7.0"
+    },
     "require-dev": {
+        "peridot-php/peridot": "^1.18",
         "phake/phake": "^2.0",
         "phpunit/phpunit": "~4.0",
         "symfony/var-dumper": "^2.0"

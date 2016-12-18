@@ -1,43 +1,21 @@
 <?php
 
-namespace Krak\Marshal;
+namespace Krak\Marshal\Util;
 
 use Closure,
     DateTime;
 
-/**
- * marshal a value by the given marshaler. There are multiple supported
- * marshalers, so this function will marshal a value by any of those marshalers
- * allowing a uniform syntax for marshaling values
- * @param $marshaler
- * @param $value
- * @return mixed
- */
-function marshal($marshaler, $value) {
-    if ($marshaler instanceof Marshaler) {
-        return $marshaler->marshal($value);
+function reduce($data, $map, $start = null) {
+    $acc = $start;
+    foreach ($data as $key => $value) {
+        $acc = $map($acc, $value, $key);
     }
-    else if ($marshaler instanceof Closure) {
-        return $marshaler($value);
-    }
-    else if (is_callable($marshaler)) {
-        return call_user_func($marshaler, $value);
-    }
-    else {
-        throw new InvalidMarshalerException();
-    }
+    return $acc;
 }
 
-/**
- * Convert a DateTime object to a timestamp
- * @param mixed $val
- * @return int|null the timestamp if a datetime object or null
- */
-function timestamp($val)
-{
-    if ($val instanceof DateTime) {
-        return $val->getTimestamp();
-    }
-
-    return null;
+function map($data, $map) {
+    return reduce($data, function($acc, $v, $k) use ($map) {
+        $acc[] = $map($v);
+        return $acc;
+    }, []);
 }

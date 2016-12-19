@@ -9,17 +9,17 @@ A library for marshaling data with a functional design. This is useful for trans
 
 use Krak\Marshal as m;
 
-$users = // get users from an orm or something
+$users = getUsers(); // get users from an orm or something
 
 $m = m\map(function($user)
 {
     return m\merge([
-        m\properties(['id', 'first_name', 'last_name']),
+        m\keys(['id', 'first_name', 'last_name']),
         function($user) {
             return [
                 'like_count' => (int) $user->like_count,
                 'biography' => substr($user->biography, 0, 64),
-                'created_at_ts' => m\timestamp($user->created_at),
+                'created_at_ts' => $user->created_at->getTimestamp(),
             ];
         }
     ]);
@@ -41,22 +41,164 @@ $marshaled = $m($users);
 */
 ```
 
-### Accessors
+## Accessors
 
-For certain marshalers, you'll want to marshal an entity in the form of the array or object. For that, we have accessors. An accessor is just a tuple of functions for getting and setting based on the type of data.
-
-- **key accessor**: the key accessor will access a key from an array
-- **property accessor**: the property accessor will access a property from an object
+For certain marshalers, you'll want to marshal an entity in the form of the array or object. For that, we have accessors. An accessor implements the `Krak\Marshal\Access` interface.
 
 ```php
 <?php
 
-use Krak\Marshal as m;
-
-list($get, $has) = m\key_accessor();
-
-$data = ['id' => 1];
-
-print_r($has($data, 'id')); // true
-print_r($get($data, 'id')); // 1
+interface Access {
+    public function get($data, $key, $default = null);
+    public function has($data, $key);
+}
 ```
+
+usage:
+
+```php
+<?php
+
+$access = new Krak\Marshal\ArrayKeyAccess();
+$data = ['a' => 1];
+$access->has($data, 'a'); // true
+$access->has($data, 'b'); // false
+$access->get($data, 'a'); // 1
+$access->get($data, 'b', 0); // 0
+```
+
+## Hydrators
+
+Hydrators are used to marshal array data into an object. Each hydrator is any callable with the following interface
+
+```php
+<?php
+
+interface Hydrator {
+    public function __invoke($class, $data);
+}
+```
+
+```php
+<?php
+
+class MyClass {
+    public $a;
+    public $b;
+}
+
+$hydrate = publicPropertyHydrator();
+$obj = $hydrate(new MyClass(), [
+    'a' => 1,
+    'b' => 2,
+]);
+
+// $obj now is hydrated with those values
+```
+
+## API
+
+### hydrate($class, $hydrator = null)
+
+Creates a marshaler that will hydrate the data with the given `$class` parameter and forwards the `$class` and the `$data` from the marshaler to the `$hydrator`. If no hydrator is supplied, the default `hydrator()` will be used.
+
+```php
+<?php
+
+class MyClass {
+    public $a;
+}
+
+$marshal = Krak\Marshal\hydrate(MyClass::class);
+$obj = $marshal(['a' => 1]);
+assert($obj instanceof MyClass);
+```
+
+### keyMap($map)
+
+transforms the keys of the data into a new key
+
+### rename(array $map)
+
+renames key fields into a new name
+
+### pipe($marshalers)
+
+Creates a marshaler that pipes the result of one marshaler into the next marshaler
+
+```php
+<?php
+
+$m = pipe([camelizeKeys(), keys(['id', 'firstName'])]);
+$m(['id' => 1, 'first_name' => 2]);
+```
+
+### merge($marshalers)
+
+Creates a marshaler that will apply $marshalers onto a value and then merges all of the results with array_merge. This expects the $marshalers to return arrays.
+
+### keys($fields, Access $acc = null)
+
+Creates a marshaler that retuns the fields of the data
+
+### map($marshaler)
+
+Creates a marshaler which takes a collection and returns an array of each of the marshaled items
+
+### collection($marshalers, Access $acc = null)
+
+Creates a marshaler of a collection based off of the collection of marshalers passed in. Each $marshaler in `$key => $marshaler` will marshal each $value in `$key => $value` based on the `$key`
+
+### stringyKeys($cb)
+
+Maps a key by allowing a stringy instance passed to callback for key manipulation
+
+### underscoredKeys()
+
+Converts the keys to underscore style keys using the `Stringy::underscored` function
+
+### camelizeKeys()
+
+Converts the keys to camelCase style keys using the `Stringy::camelize` function
+
+### identity()
+
+Creates a marshaler for the identity function
+
+### mock($val)
+
+Creates a marshaler that returns $val always. This is useful for testing
+
+### notnull($marshaler)
+
+Creates a marshaler that will not allow null values to be passed to the marshaler. if a null value is passed, it just returns null and doesn't call the marshaler
+
+### hydrator()
+
+Returns a statically cached instance of a default hydrator instance.
+
+### classNameHydrator($hydrator)
+
+Treats the `$class` parameter as a class name and will instantiate a class and delgate to the internal hydrator
+
+### publicPropertyHydrator()
+
+Assigns the properties from array into the `$class` object passed in via publicly accessible properties.
+
+### class ArrayKeyAccess
+
+Performs access on arrays via the key.
+
+### class ObjectPropertyAccess
+
+Performs access on object properties via the property name
+
+### class AnyAccess
+
+Delegates access to either `ArrayKeyAccess` or `ObjectPropertyAccess` if the data is an array or not.
+
+This is the default accessor used.
+
+### access()
+
+Returns a statically cached instance of AnyAccess

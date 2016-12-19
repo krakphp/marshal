@@ -147,7 +147,11 @@ Creates a marshaler which takes a collection and returns an array of each of the
 
 ### collection($marshalers, Access $acc = null)
 
-Creates a marshaler of a collection based off of the collection of marshalers passed in. Each $marshaler in `$key => $marshaler` will marshal each $value in `$key => $value` based on the `$key`
+Creates a marshaler of a collection based off of the collection of marshalers passed in. Each $marshaler in `$key => $marshaler` will marshal each $value in `$key => $value` based on the `$key`.
+
+### on($marshalers, Access $acc = null)
+
+Similar to `collection`, it marshals the fields of the collection based off of the map of marshalers passed in. The only difference is that it updates the fields in the original collection and returns the entire modified collection.
 
 ### stringyKeys($cb)
 

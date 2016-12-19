@@ -117,6 +117,20 @@ function collection($marshalers, Access $acc = null) {
     };
 }
 
+/** perform these marshalers on the fields of data if they exist, only works on arrays
+    for now. Works exactly the same way as `collection` except it retuns all of the data */
+function on($marshalers, Access $acc = null) {
+    $acc = $acc ?: access();
+    return function($data) use ($marshalers, $acc) {
+        foreach ($marshalers as $key => $marshaler) {
+            if ($acc->has($data, $key)) {
+                $data[$key] = $marshaler($acc->get($data, $key));
+            }
+        }
+        return $data;
+    };
+}
+
 /** Maps a key by allowing a stringy instance passed to callback for key manipulation */
 function stringyKeys($cb) {
     return keyMap(function($key) use ($cb) {

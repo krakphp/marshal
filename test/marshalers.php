@@ -39,13 +39,21 @@ describe('#keys', function() {
     });
 });
 describe('#collection', function() {
-    it('delegates marshaling to sub fields', function() {
+    it('marshals sub fields and returns those marshaled values as an array', function() {
         $m = m\collection([
             'a' => m\mock(1),
-            'b' => m\mock(2),
         ]);
 
-        assert(['a' => 1, 'b' => 2] == $m(['a' => null, 'b' => null]));
+        assert(['a' => 1] == $m(['a' => null, 'b' => null]));
+    });
+});
+describe('#on', function() {
+    it('delegates marshaling to sub fields', function() {
+        $m = m\on([
+            'a' => m\mock(1),
+        ]);
+
+        assert(['a' => 1, 'b' => null] == $m(['a' => null, 'b' => null]));
     });
 });
 describe('#identity', function() {

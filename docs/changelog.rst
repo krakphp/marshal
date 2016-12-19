@@ -2,6 +2,17 @@
 Changelog
 =========
 
+0.2.0
+=====
+
+- Full API Documentation
+- Removed old accessors in favor of the ``Access`` interface
+- Added Hydrators
+- Removed PHPUnit tests in favor of Peridot tests
+- Removed Marshaler interface, InvalidMarshalerException, marshal, timestamp, properties, fields.
+- Updated the signature of collection and keys in order to use the new Access interface and be more user friendly
+- Added several new useful marshalers
+
 0.1.1
 =====
 

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- More Marshalers: `only`, `except`, `filter`, `dates`, `objectVars`, `doctrineReference`, `typeCast` #1
+
 ## 0.2.1
 
 - Added `on` func

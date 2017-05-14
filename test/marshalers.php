@@ -2,6 +2,52 @@
 
 use Krak\Marshal as m;
 
+describe('#only', function() {
+    it('only allows the given fields', function() {
+        $data = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+        $m = m\only(['a']);
+        assert($m($data) == ['a' => 1]);
+    });
+});
+describe('#except', function() {
+    it('allows all except the given fields', function() {
+        $data = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+        $m = m\except(['b', 'c']);
+        assert($m($data) == ['a' => 1]);
+    });
+});
+describe('#objectVars', function() {
+    it('converts an object into an array', function() {
+        $data = (object) ['a' => 1];
+        $m = m\objectVars();
+        assert($m($data) == ['a' => 1]);
+    });
+});
+describe('#dates', function() {
+    it('formats any dates', function() {
+        $data = [new \DateTime()];
+        $data[0]->format('r');
+        $m = m\dates();
+        assert($m($data)[0] == $data[0]->format('r'));
+    });
+});
+describe('#typeCast', function() {
+    it('type casts certain fields into a type', function() {
+        $data = ['a' => '0', 'b' => 1];
+        $m = m\typeCast(['a', 'b'], 'bool');
+        $data = $m($data);
+        assert($data['a'] === false && $data['b'] === true);
+    });
+});
+
 describe('#mock', function() {
     it('returns the same data always', function() {
         $m = m\mock('abc');

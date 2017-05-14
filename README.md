@@ -122,6 +122,30 @@ transforms the keys of the data into a new key
 
 renames key fields into a new name
 
+### only(array $fields)
+
+It only includes the given fields. Everything else is filtered out.
+
+### except(array $fields)
+
+It includes all except the given fields. Everything else is kept.
+
+### filter(callable $filter)
+
+Filters the collection via the filter func which has the signature `$filter($value, $key): bool`
+
+### dates($format = 'r')
+
+Formats all instances of `DateTimeInterface` with the given format specifier.
+
+### objectVars()
+
+Converts the properties of an object into an array. This is just an alias of `get_object_vars`.
+
+### typeCast(array $fields, $type)
+
+Type casts the given fields into a specific type.
+
 ### pipe($marshalers)
 
 Creates a marshaler that pipes the result of one marshaler into the next marshaler

@@ -27,6 +27,69 @@ function keyMap($map) {
     };
 }
 
+/** only allow the given fields */
+function only($fields) {
+    return filter(function($v, $k) use ($fields) {
+        return in_array($k, $fields);
+    });
+}
+
+/** allow all the fields except the given fields */
+function except($fields) {
+    return filter(function($v, $k) use ($fields) {
+        return !in_array($k, $fields);
+    });
+}
+
+/** filter values by returning false or true to remove or keep values */
+function filter($filter) {
+    return function($data) use ($filter) {
+        return Util\reduce($data, function($acc, $v, $k) use ($filter) {
+            if ($filter($v, $k)) {
+                $acc[$k] = $v;
+            }
+            return $acc;
+        }, []);
+    };
+}
+
+/** marshal any date time interfaces  */
+function dates($format = 'r') {
+    return map(function($v) use ($format) {
+        return $v instanceof \DateTimeInterface ? $v->format($format) : $v;
+    });
+}
+
+function typeCast(array $fields, $type) {
+    return map(function($v, $k) use ($fields, $type) {
+        if (in_array($k, $fields)) {
+            settype($v, $type);
+        }
+
+        return $v;
+    });
+}
+
+
+
+/** convert object vars into array */
+function objectVars() {
+    return 'get_object_vars';
+}
+
+/** maps entities into doctrine references */
+function doctrineReference($em, $on) {
+    return function($data) use ($em, $on) {
+        return Util\reduce($data, function($acc, $v, $k) use ($em, $on) {
+            if (array_key_exists($k, $on) && !$v instanceof $on[$k]) {
+                $v = $em->getReference($on[$k], $v);
+            }
+            $acc[$k] = $v;
+            return $acc;
+        }, []);
+    };
+}
+
 /** renames key fields into a new name */
 function rename(array $map) {
     return keyMap(function($key) use ($map) {

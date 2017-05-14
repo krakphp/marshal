@@ -15,7 +15,7 @@ function reduce($data, $map, $start = null) {
 
 function map($data, $map) {
     return reduce($data, function($acc, $v, $k) use ($map) {
-        $acc[] = $map($v);
+        $acc[$k] = $map($v, $k);
         return $acc;
     }, []);
 }

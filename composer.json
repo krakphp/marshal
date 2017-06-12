@@ -23,6 +23,7 @@
             "src/hydrators.php",
             "src/accessors.php",
             "src/marshalers.php",
+            "src/unmarshal.php",
             "src/util.php"
         ]
     },

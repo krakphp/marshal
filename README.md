@@ -1,6 +1,6 @@
 # Krak Marshal
 
-A library for marshaling data with a functional design. This is useful for transforming/marshaling data for API output, hydrating serialized data, or for any other types types of transforming.
+A library for marshaling data with a functional design. This is useful for transforming/marshaling data for API output, un-marshaling and hydrating serialized data, or for any other types types of transforming.
 
 ## Usage
 
@@ -212,6 +212,63 @@ Treats the `$class` parameter as a class name and will instantiate a class and d
 ### publicPropertyHydrator()
 
 Assigns the properties from array into the `$class` object passed in via publicly accessible properties.
+
+### fromXML()
+
+Parses XML string into an array.
+
+```php
+<?php
+
+$xml = <<<XML
+<?xml version="1.0" ?>
+<root a="1">
+    <item>Value</item>
+    <items>
+        <item>1</item>
+        <item>2</item>
+    </items>
+    <map id="1">
+        <a>A</a>
+        <b>B</b>
+    </map>
+    <node>
+        <![CDATA[<cdata>]]>
+    </node>
+</root>
+XML;
+$unmarshal = Krak\Marshal\fromXML();
+var_dump($unmarshal($xml));
+/** Outputs:
+array(5) {
+  ["@a"]=>
+  string(1) "1"
+  ["item"]=>
+  string(5) "Value"
+  ["items"]=>
+  array(1) {
+    ["item"]=>
+    array(2) {
+      [0]=>
+      string(1) "1"
+      [1]=>
+      string(1) "2"
+    }
+  }
+  ["map"]=>
+  array(3) {
+    ["@id"]=>
+    string(1) "1"
+    ["a"]=>
+    string(1) "A"
+    ["b"]=>
+    string(1) "B"
+  }
+  ["node"]=>
+  string(7) "<cdata>"
+}
+*/
+```
 
 ### class ArrayKeyAccess
 

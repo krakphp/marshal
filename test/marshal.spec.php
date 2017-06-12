@@ -15,4 +15,7 @@ describe("Krak Marshal", function() {
     describe('Hydrators', function() {
         require_once __DIR__ . '/hydrators.php';
     });
+    describe('Unmarshalers', function() {
+        require_once __DIR__ . '/unmarshal.php';
+    });
 });

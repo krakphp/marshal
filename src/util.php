@@ -19,3 +19,32 @@ function map($data, $map) {
         return $acc;
     }, []);
 }
+
+function filter($data, $filter) {
+    return reduce($data, function($acc, $v, $k) use ($filter) {
+        if ($filter($v, $k)) {
+            $acc[] = $v;
+        }
+        return $acc;
+    }, []);
+}
+
+function all($data, $test) {
+    foreach ($data as $key => $value) {
+        if (!$test($value, $key)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function some($data, $test) {
+    foreach ($data as $key => $value) {
+        if ($test($value, $key)) {
+            return true;
+        }
+    }
+
+    return false;
+}

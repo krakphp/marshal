@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- XML unmarshaling `fromXML` #3
+
 ## 0.2.2
 
 ### Added

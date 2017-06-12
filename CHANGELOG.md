@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.3 - 2017-06-12
+
 ### Added
 
 - XML unmarshaling `fromXML` #3
